@@ -12,31 +12,61 @@ public class OrgChart {
     //  Add those fields here. Consider how you want to store the data, and which collection types to use to make
     //  implementing the other methods as easy as possible. There are several different ways to approach this problem, so
     //  experiment and don't be afraid to change how you're storing your data if it's not working out!
+	
+	private HashSet<Employee> orgChartSet;
+	
+	public OrgChart() {
+		super();
+		this.orgChartSet = new HashSet<>();
+	}
 
-    /**
+	/**
      * TODO: Implement this method
      *  <br><br>
      *  Adds a given {@code Employee} to the {@code OrgChart}. If the {@code Employee} is successfully added, this
      *  method should return true. If the {@code Employee} was not successfully added, it should return false. In order
      *  to determine if and how an {@code Employee} can be added, refer to the following algorithm:
      *  <br><br>
-     *  If the given {@code Employee} is already present in the {@code OrgChart}, do not add it and
+     *  [m:done] If the given {@code Employee} is already present in the {@code OrgChart}, do not add it and
      *  return false. Otherwise:
      *  <br><br>
-     *  If the given {@code Employee} has a {@code Manager} and that {@code Manager} is not part of the
+     *  [m:done] If the given {@code Employee} has a {@code Manager} and that {@code Manager} is not part of the
      *  {@code OrgChart} yet, add that {@code Manager} first and then add the given {@code Employee}, and return true.
      *  <br><br>
-     *  If the given {@code Employee} has no {@code Manager}, but is a {@code Manager} itself, add it to the
+     *  [m:done]If the given {@code Employee} has no {@code Manager}, but is a {@code Manager} itself, add it to the
      *  {@code OrgChart} and return true.
      *  <br><br>
-     *  If the given {@code Employee} has no {@code Manager} and is not a {@code Manager} itself, do not add it
+     *  [m:done] If the given {@code Employee} has no {@code Manager} and is not a {@code Manager} itself, do not add it
      *  and return false.
      *
      * @param employee the {@code Employee} to add to the {@code OrgChart}
      * @return true if the {@code Employee} was added successfully, false otherwise
      */
     public boolean addEmployee(Employee employee) {
-        throw new MissingImplementationException();
+        if(employee == null) {
+        	return false;
+        }
+    	
+    	if(this.hasEmployee(employee)) {
+        	return false;
+        }
+        
+        if(employee.getManager() == null) {
+        	if(employee instanceof Manager) {
+        		this.orgChartSet.add(employee);
+        		return true;
+        	} else {
+        		return false;
+        	}
+        }
+        
+        if(!this.hasEmployee(employee.getManager())) {
+        	addEmployee(employee.getManager());
+        }
+        
+        orgChartSet.add(employee);
+        return true;
+               
     }
 
     /**
@@ -48,7 +78,7 @@ public class OrgChart {
      * @return true if the {@code Employee} has been added to the {@code OrgChart}, false otherwise
      */
     public boolean hasEmployee(Employee employee) {
-        throw new MissingImplementationException();
+        return this.orgChartSet.contains(employee);
     }
 
     /**
@@ -62,7 +92,9 @@ public class OrgChart {
      *         been added to the {@code OrgChart}
      */
     public Set<Employee> getAllEmployees() {
-        throw new MissingImplementationException();
+    	Set<Employee> res = new HashSet<>();
+    	res.addAll(orgChartSet);
+        return res;
     }
 
     /**
@@ -76,7 +108,13 @@ public class OrgChart {
      *         have been added to the {@code OrgChart}
      */
     public Set<Manager> getAllManagers() {
-        throw new MissingImplementationException();
+        HashSet<Manager> managerSet = new HashSet<>();
+        for(Employee employee: orgChartSet) {
+        	if(employee instanceof Manager) {
+        		managerSet.add((Manager) employee); 
+        	}
+        }
+        return managerSet;
     }
 
     /**
@@ -97,7 +135,13 @@ public class OrgChart {
      *         or if there are no subordinates for the given {@code Manager}
      */
     public Set<Employee> getDirectSubordinates(Manager manager) {
-        throw new MissingImplementationException();
+    	HashSet<Employee> subordSet = new HashSet<>();
+    	for(Employee employee: orgChartSet) {
+    		if(employee.getManager() == manager) {
+    			subordSet.add(employee);
+    		}
+    	}
+    	return subordSet;
     }
 
     /**
@@ -117,7 +161,12 @@ public class OrgChart {
      *         associated {@code Manager}, or an empty map if the {@code OrgChart} is empty.
      */
     public Map<Manager, Set<Employee>> getFullHierarchy() {
-        throw new MissingImplementationException();
+        HashMap<Manager, Set<Employee>> hierarcMap = new HashMap<>();
+        Set<Manager> managers = this.getAllManagers();
+        for(Manager manager: managers) {
+        	hierarcMap.put(manager, getDirectSubordinates(manager));
+        }
+        return hierarcMap;        
     }
 
 }

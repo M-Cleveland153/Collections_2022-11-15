@@ -2,7 +2,10 @@ package com.cooksys.ftd.assignments.collections.model;
 
 import com.cooksys.ftd.assignments.collections.util.MissingImplementationException;
 
+import java.awt.geom.IllegalPathStateException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO: Implement this class
@@ -14,6 +17,8 @@ import java.util.List;
 public class Manager implements Employee {
 
     // TODO: Does this class need private fields? If so, add them here
+	private String name;
+	private Manager manager;
 
     /**
      * TODO: Implement this constructor.
@@ -21,7 +26,7 @@ public class Manager implements Employee {
      * @param name the name of the manager to be created
      */
     public Manager(String name) {
-        throw new MissingImplementationException();
+        this.name = name;
     }
 
     /**
@@ -31,7 +36,8 @@ public class Manager implements Employee {
      * @param manager the direct manager of the manager to be created
      */
     public Manager(String name, Manager manager) {
-        throw new MissingImplementationException();
+        this.name = name;
+        this.manager = manager;
     }
 
     /**
@@ -41,7 +47,7 @@ public class Manager implements Employee {
      */
     @Override
     public String getName() {
-        throw new MissingImplementationException();
+        return name;
     }
 
     /**
@@ -51,7 +57,7 @@ public class Manager implements Employee {
      */
     @Override
     public boolean hasManager() {
-        throw new MissingImplementationException();
+        return manager != null;
     }
 
     /**
@@ -61,7 +67,11 @@ public class Manager implements Employee {
      */
     @Override
     public Manager getManager() {
-        throw new MissingImplementationException();
+        if(hasManager()) {
+        	return manager; 
+        }else {
+			return null;
+		}
     }
 
     /**
@@ -79,11 +89,46 @@ public class Manager implements Employee {
      */
     @Override
     public List<Manager> getChainOfCommand() {
-        throw new MissingImplementationException();
+    	List<Manager> cOCList = new ArrayList<>(); 
+    	if(!this.hasManager()) {
+    		return cOCList;    		
+    	}
+    	
+    	Manager manager = this.getManager();
+    	cOCList.add(manager);
+    	
+    	while(manager.hasManager()) {
+    		manager = manager.getManager();  
+    		cOCList.add(manager);
+    	}
+    	    	
+        return cOCList;
     }
 
-    // TODO: Does this class need custom .equals() and .hashcode() methods? If so, implement them here.
+	// TODO: Does this class need custom .equals() and .hashcode() methods? If so, implement them here.
+    @Override
+	public int hashCode() {
+		return Objects.hash(manager, name);
+	}
 
-    // TODO [OPTIONAL]: Consider adding a custom .toString() method here if you want to debug your code with System.out.println() statements
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Manager other = (Manager) obj;
+		return Objects.equals(manager, other.manager) && Objects.equals(name, other.name);
+	}
+
+	
+	// TODO [OPTIONAL]: Consider adding a custom .toString() method here if you want to debug your code with System.out.println() statements
+	@Override
+	public String toString() {
+		return "Manager [name=" + name + ", manager=" + manager + "]";
+	}
+    	
 
 }
