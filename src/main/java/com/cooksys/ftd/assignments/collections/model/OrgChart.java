@@ -16,7 +16,6 @@ public class OrgChart {
 	private HashSet<Employee> orgChartSet;
 	
 	public OrgChart() {
-		super();
 		this.orgChartSet = new HashSet<>();
 	}
 
@@ -64,7 +63,7 @@ public class OrgChart {
         	addEmployee(employee.getManager());
         }
         
-        orgChartSet.add(employee);
+        this.orgChartSet.add(employee);
         return true;
                
     }
@@ -93,7 +92,7 @@ public class OrgChart {
      */
     public Set<Employee> getAllEmployees() {
     	Set<Employee> res = new HashSet<>();
-    	res.addAll(orgChartSet);
+    	res.addAll(this.orgChartSet);
         return res;
     }
 
@@ -109,7 +108,7 @@ public class OrgChart {
      */
     public Set<Manager> getAllManagers() {
         HashSet<Manager> managerSet = new HashSet<>();
-        for(Employee employee: orgChartSet) {
+        for(Employee employee: this.orgChartSet) {
         	if(employee instanceof Manager) {
         		managerSet.add((Manager) employee); 
         	}
@@ -136,7 +135,7 @@ public class OrgChart {
      */
     public Set<Employee> getDirectSubordinates(Manager manager) {
     	HashSet<Employee> subordSet = new HashSet<>();
-    	for(Employee employee: orgChartSet) {
+    	for(Employee employee: this.orgChartSet) {
     		if(employee.getManager() == manager) {
     			subordSet.add(employee);
     		}
